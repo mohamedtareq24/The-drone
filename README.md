@@ -8,3 +8,7 @@ These files contain:
 2-PCB design that can be used to control the coreless motors of the quadcopter.
 
 3-List of the parts I used
+
+4- circut shematic
+
+be aware that this is not the final state for the code, the pcb or the schematic some improvment may be added in the future
