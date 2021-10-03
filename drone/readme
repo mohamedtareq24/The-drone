@@ -1,0 +1,17 @@
+these are the equations used to represent paths for the joystick controler of the drone 
+updown uses circpath parameters as the controling is based on the equation 
+
+(x+77)^(2) + (y-266)^(2) = 60685
+
+as updown should satisfy
+ (64,64)
+ (0,32)
+ (-64,20)
+ implimnted by
+circpath 
+
+ x^(2) + (y + 176.67)^(2) + (z + 176.67)^(2) = 62424.58
+ implminted by spherepath
+
+
+

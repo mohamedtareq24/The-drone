@@ -1,0 +1,189 @@
+<html>
+<title>
+  joystick
+</title>
+
+<head>
+  <meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0'>
+  <meta name='mobile-web-app-capable' content='yes'>
+
+  <head>
+
+  <body style='background-color: rgb(29, 0, 8); overflow: hidden;' id='body' ontouchmove='send();'>
+    <h1 id='cords' style='text-align: center; color: wheat;'></h1>
+    <h1 id='angle' style='text-align: center; color: wheat;'></h1>
+    <h1 id='motors' style='text-align: center; color: wheat;'></h1>
+
+    <div style='height: 256px; 
+         width :256px;
+         border-radius: 50%;
+         top  : 50%;
+         left : 50%;
+         transform: translate(-155%,-50%);
+         caret-color: transparent;
+         background-color: rgb(37, 37, 1); 
+         border: rgb(81, 255, 0); border-style:solid;
+         position: absolute;'>
+      <div style='height: 10px;
+                 width :10px;
+                 border-radius: 50%;
+                 top  : 50%;
+                 left : 50%;
+                 transform: translate(-5px,-5px);
+                 caret-color: transparent;
+                 background-color: rgb(0, 0, 0); 
+                 position: absolute;' id='joystick' ontouchmove='move1(event);' ontouchend='reset1()'>
+        <div style='height: 128px;; 
+               width :128px;
+               border-radius: 50%;
+               top  : 50%;
+               left : 50%;
+               transform: translate(-64px,-64px);
+               caret-color: transparent;
+               background-color: rgb(196, 176, 0); 
+               position: absolute;'>
+
+        </div>
+
+
+      </div>
+
+    </div>
+    <div style='height: 256px; 
+         width :256px;
+         border-radius: 50%;
+         top  : 50%;
+         left : 50%;
+         transform: translate(55%,-50%);
+         caret-color: transparent;
+         border: rgb(255, 72, 0); border-style:solid;
+         background-color: rgb(70, 32, 1); 
+         position: absolute;'>
+
+      <div style='height: 10px;; 
+                 width :10px;
+                 border-radius: 50%;
+                 top  : 50%;
+                 left : 50%;
+                 transform: translate(-5px,-5px);
+                 caret-color: transparent;
+                 background-color: rgb(0, 0, 0); 
+                 position: absolute;' id='joystick2' ontouchmove='move2(event);' ontouchend='reset2()'>
+
+        <div style='height: 128px;; 
+               width :128px;
+               border-radius: 50%;
+               top  : 50%;
+               left : 50%;
+               transform: translate(-64px,-64px);
+               caret-color: transparent;
+               background-color: rgb(235, 137, 8); 
+               position: absolute;'>
+        </div>
+      </div>
+    </div>
+
+
+  </body>
+  <script>
+    var connection = new WebSocket('ws://' + location.hostname + ':81/');
+    var json = 'magnitude1:' + 0 + ',' + 'angle1:' + 0;
+    var json2 = 'magnitude2:' + 0 + ',' + 'angle2:' + 0;
+    var angle1 = 0;
+    var angle2 = 0;
+    var magnitude1 = 0, magnitude2 = 0;
+    function send() {
+      connection.send('{' + json + ',' + json2 + '}');
+    }
+
+    function move1(event) {
+
+      function inner(x, y) {
+        document.getElementById('joystick').style.transform = 'translate(' + x + 'px,' + y + 'px)';
+      }
+      function outter(x, y) {
+        let angle = Math.atan2((y), x);
+        let j = 64 * Math.sin(angle);
+        let i = 64 * Math.cos(angle);
+        document.getElementById('joystick').style.transform = 'translate(' + (i) + 'px,' + (j) + 'px)';
+        return Math.round(Math.atan2(-(y), x) * 180 / 3.1415);
+      }
+
+      let x = event.touches[0].clientX - 155;
+      let y = event.touches[0].clientY - 155;
+      var magnitude;
+      document.getElementById('cords').innerHTML = (5 + x) + ',' + -1 * (y + 5);
+      angle = Math.round(Math.atan2(-(y), x) * 180 / 3.1415);
+      document.getElementById('angle').innerHTML = angle;
+      if ((x + 5) * (x + 5) + (y + 5) * (y + 5) <= 64 * 64) {
+        magnitude = (x + 5) * (x + 5) + (5 + y) * (5 + y);
+        magnitude = Math.round(Math.sqrt(magnitude));
+        inner(x, y);
+        json = 'magnitude1:' + magnitude + ',' + 'angle1:' + angle;
+      }
+      else {
+        outter(x, y);
+        angle = outter(x, y);
+        json = 'magnitude1:' + 64 + ',' + 'angle1:' + angle;
+      }
+
+    }
+
+
+
+    function move2(event) {
+
+      function inner(x, y) {
+
+        document.getElementById('joystick2').style.transform = 'translate(' + x + 'px,' + y + 'px)';
+      }
+      function outter(x, y) {
+        let angle = Math.atan2((y), x);
+        let j = 64 * Math.sin(angle);
+        let i = 64 * Math.cos(angle);
+        document.getElementById('joystick2').style.transform = 'translate(' + (i) + 'px,' + (j) + 'px)';
+        return Math.round(Math.atan2(-(y), x) * 180 / 3.1415);
+      }
+
+      let x = event.touches[1].clientX - 700;
+      let y = event.touches[1].clientY - 180;
+      angle = Math.round(Math.atan2(-(y), x) * 180 / 3.1415);
+      var anglei = (angle + 360) % 360;
+      let arry = ['cw','up,cw', 'up', 'up', 'up,ccw', 'ccw', 'ccw', 'down,ccw', 'down', 'down', 'cw,down','cw'];
+      let i;
+      i = Math.floor(anglei / 30);
+      document.getElementById('motors').innerHTML = arry[i];
+
+      if ((x + 5) * (x + 5) + (y + 5) * (y + 5) <= 64 * 64) {
+        magnitude = (x + 5) * (x + 5) + (5 + y) * (5 + y);
+        magnitude = Math.round(Math.sqrt(magnitude));
+        inner(x, y);
+        json2 = 'magnitude2:' + magnitude + ',' + 'angle2:' + angle;
+      }
+      else {
+        outter(x, y);
+        angle = outter(x, y);
+        json2 = 'magnitude2:' + 64 + ',' + 'angle2:' + angle;
+      }
+
+    }
+
+    function reset1() {
+      document.getElementById('cords').innerHTML = 0 + ',' + 0;
+      document.getElementById('cords').innerHTML = 0 + ',' + 0;
+      document.getElementById('joystick').style.transform = 'translate(' + 0 + 'px,' + 0 + 'px)';
+      json = 'magnitude1:' + 0 + ',' + 'angle1:' + 0;
+      connection.send('{' + json + ',' + json2 + '}');
+    }
+    function reset2() {
+      document.getElementById('cords').innerHTML = 0 + ',' + 0;
+      document.getElementById('cords').innerHTML = 0 + ',' + 0;
+      document.getElementById('joystick2').style.transform = 'translate(' + 0 + 'px,' + 0 + 'px)';
+      json2 = 'magnitude2:' + 0 + ',' + 'angle2:' + 0;
+      connection.send('{' + json + ',' + json2 + '}');
+    }
+
+
+  </script>
+
+</html>
