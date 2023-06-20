@@ -10,7 +10,6 @@ These files contain:
 3-List of the parts I used
 
 4- circut shematic
-
-##GUI
+## GUI
 ![image](https://github.com/mohamedtareq24/The-drone/assets/90535558/8db19776-a9b7-4e76-9667-7fcbc51a8460)
 
