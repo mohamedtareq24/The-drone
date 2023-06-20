@@ -11,5 +11,6 @@ These files contain:
 
 4- circut shematic
 
-be aware that this is not the final state for the code, the pcb or the schematic some improvment may be added in the future
-![image](https://github.com/mohamedtareq24/The-drone/assets/90535558/a5f6fe65-f3fe-4869-a09e-58d09760abc1)
+##GUI
+![image](https://github.com/mohamedtareq24/The-drone/assets/90535558/8db19776-a9b7-4e76-9667-7fcbc51a8460)
+
